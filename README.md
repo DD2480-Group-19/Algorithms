@@ -302,6 +302,7 @@ $ java -cp classes com.williamfiset.algorithms.search.BinarySearch
 
 # String algorithms
 
+- [Aho-Corasick](https://github.com/DD2480-Group-19/Algorithms/blob/feat/issue%2349/src/main/java/com/williamfiset/algorithms/strings/Aho_Corasick.java )**- O(N + L + Z), where Z is the count of matches**
 - [Booth's algorithm (finds lexicographically smallest string rotation)](src/main/java/com/williamfiset/algorithms/strings/BoothsAlgorithm.java) **- O(n)**
 - [Knuth-Morris-Pratt algorithm (finds pattern matches in text)](src/main/java/com/williamfiset/algorithms/strings/KMP.java) **- O(n+m)**
 - [Longest Common Prefix (LCP) array](src/main/java/com/williamfiset/algorithms/strings/LongestCommonPrefixArray.java) **- O(nlog(n)) bounded by SA construction, otherwise O(n)**
