@@ -165,7 +165,7 @@ public class TreeIsomorphismWithBfs {
     return ((l1.compareTo(l2) < 0) ? (l1 + l2) : (l2 + l1));
   }
 
-  public boolean treesAreIsomorphic(List<List<Integer>> tree1, List<List<Integer>> tree2) {
+  public static boolean treesAreIsomorphic(List<List<Integer>> tree1, List<List<Integer>> tree2) {
     return encodeTree(tree1).equals(encodeTree(tree2));
   }
 
