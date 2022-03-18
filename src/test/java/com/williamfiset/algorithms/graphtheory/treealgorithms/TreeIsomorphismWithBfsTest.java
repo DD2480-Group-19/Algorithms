@@ -5,27 +5,29 @@
 
 package com.williamfiset.algorithms.graphtheory.treealgorithms;
 
+import org.junit.Test;
+
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphism.TreeNode;
-import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphismWithBfs.addUndirectedEdge;
-import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphismWithBfs.createEmptyTree;
-import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphismWithBfs.encodeTree;
-import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphismWithBfs.treesAreIsomorphic;
-
-import java.util.*;
-import org.junit.*;
+import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphism.treesAreIsomorphic;
+import static com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphismWithBfs.*;
 
 public class TreeIsomorphismWithBfsTest {
 
   @Test
   public void testSingleton() {
+    TreeIsomorphismWithBfs tree = new TreeIsomorphismWithBfs();
     List<List<Integer>> tree1 = createEmptyTree(1);
     List<List<Integer>> tree2 = createEmptyTree(1);
     assertThat(treesAreIsomorphic(tree1, tree2)).isEqualTo(true);
+    tree.print_coverage();
   }
 
   @Test
   public void testTwoNodeTree() {
+    TreeIsomorphismWithBfs tree = new TreeIsomorphismWithBfs();
     List<List<Integer>> tree1 = createEmptyTree(2);
     List<List<Integer>> tree2 = createEmptyTree(2);
 
@@ -33,10 +35,12 @@ public class TreeIsomorphismWithBfsTest {
     addUndirectedEdge(tree2, 1, 0);
 
     assertThat(treesAreIsomorphic(tree1, tree2)).isEqualTo(true);
+    tree.print_coverage();
   }
 
   @Test
   public void testSmall() {
+    TreeIsomorphismWithBfs tree = new TreeIsomorphismWithBfs();
     List<List<Integer>> tree1 = createEmptyTree(5);
     List<List<Integer>> tree2 = createEmptyTree(5);
 
@@ -51,10 +55,12 @@ public class TreeIsomorphismWithBfsTest {
     addUndirectedEdge(tree2, 2, 4);
 
     assertThat(treesAreIsomorphic(tree1, tree2)).isEqualTo(true);
+    tree.print_coverage();
   }
 
   @Test
   public void testSimilarChains() {
+    TreeIsomorphismWithBfs tree = new TreeIsomorphismWithBfs();
     // Trees 1 and 3 are equal
     int n = 10;
     List<List<Integer>> tree1 = createEmptyTree(n);
@@ -94,10 +100,12 @@ public class TreeIsomorphismWithBfsTest {
     assertThat(treesAreIsomorphic(tree1, tree2)).isEqualTo(false);
     assertThat(treesAreIsomorphic(tree1, tree3)).isEqualTo(true);
     assertThat(treesAreIsomorphic(tree2, tree3)).isEqualTo(false);
+    tree.print_coverage();
   }
 
   @Test
   public void testSlidesExample() {
+    TreeIsomorphismWithBfs trees = new TreeIsomorphismWithBfs();
     // Setup tree structure from:
     // http://webhome.cs.uvic.ca/~wendym/courses/582/16/notes/582_12_tree_can_form.pdf
     List<List<Integer>> tree = createEmptyTree(19);
@@ -124,12 +132,12 @@ public class TreeIsomorphismWithBfsTest {
     String treeEncoding = encodeTree(tree);
     String expectedEncoding = "(((()())(()())())((())()()())(()()()))";
     assertThat(treeEncoding).isEqualTo(expectedEncoding);
+    trees.print_coverage();
   }
 
   @Test
   public void t() {
-    List<List<Integer>> tree = createEmptyTree(10);
-
+    TreeIsomorphismWithBfs tree = new TreeIsomorphismWithBfs();
     TreeNode node0 = new TreeNode(0);
     TreeNode node1 = new TreeNode(1);
     TreeNode node2 = new TreeNode(2);
@@ -146,7 +154,7 @@ public class TreeIsomorphismWithBfsTest {
     node5.addChildren(node9);
     node2.addChildren(node6, node7);
     node3.addChildren(node8);
-
+    tree.print_coverage();
     // TODO(william): finish this test to check for "(((())())(()())(()))" encoding
     // System.out.println(
     // com.williamfiset.algorithms.graphtheory.treealgorithms.TreeIsomorphism.encode(node0));

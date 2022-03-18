@@ -17,7 +17,7 @@ package com.williamfiset.algorithms.graphtheory.treealgorithms;
 import java.util.*;
 
 public class TreeIsomorphismWithBfs {
-  public boolean[] branches = new boolean[9];
+  public static boolean[] branches = new boolean[9];
 
   public static List<List<Integer>> createEmptyTree(int n) {
     List<List<Integer>> tree = new ArrayList<>(n);
@@ -30,7 +30,7 @@ public class TreeIsomorphismWithBfs {
     tree.get(to).add(from);
   }
 
-  public List<Integer> findTreeCenters(List<List<Integer>> tree) {
+  public static List<Integer> findTreeCenters(List<List<Integer>> tree) {
     final int n = tree.size();
     int[] degrees = new int[n];
 
@@ -66,7 +66,7 @@ public class TreeIsomorphismWithBfs {
   // Encodes a tree as a string such that any isomorphic tree
   // also has the same encoding.
   // TODO(william): make this method private and test only with the treesAreIsomorphic method
-  public String encodeTree(List<List<Integer>> tree) {
+  public static String encodeTree(List<List<Integer>> tree) {
     if (tree == null || tree.size() == 0){
       branches[2] = true;
       return "";}
