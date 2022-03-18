@@ -9,6 +9,8 @@ package com.williamfiset.algorithms.datastructures.balancedtree;
 import com.williamfiset.algorithms.datastructures.utils.TreePrinter;
 import com.williamfiset.algorithms.datastructures.utils.TreePrinter.PrintableNode;
 
+import java.util.Arrays;
+
 public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
   public class Node implements PrintableNode {
@@ -44,6 +46,8 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
       return value.toString();
     }
   }
+  // for branch coverage
+  public boolean[] branches = new boolean[32];
 
   // The root node of the AVL tree.
   public Node root;
@@ -55,7 +59,10 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
   // root and its furthest leaf. This means that a tree containing a single
   // node has a height of 0.
   public int height() {
-    if (root == null) return 0;
+    if (root == null){
+      branches[0] = true;
+      return 0;
+    }
     return root.height;
   }
 
@@ -76,16 +83,25 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
   // Recursive contains helper method.
   private boolean contains(Node node, T value) {
-    if (node == null) return false;
+    if (node == null){
+      branches[1] = true;
+      return false;
+    }
 
     // Compare current value to the value in the node.
     int cmp = value.compareTo(node.value);
 
     // Dig into left subtree.
-    if (cmp < 0) return contains(node.left, value);
+    if (cmp < 0){
+      branches[2] = true;
+      return contains(node.left, value);
+    }
 
     // Dig into right subtree.
-    if (cmp > 0) return contains(node.right, value);
+    if (cmp > 0){
+      branches[3] = true;
+      return contains(node.right, value);
+    }
 
     // Found value in tree.
     return true;
@@ -93,8 +109,12 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
   // Insert/add a value to the AVL tree. The value must not be null, O(log(n))
   public boolean insert(T value) {
-    if (value == null) return false;
+    if (value == null){
+      branches[4] = true;
+      return false;
+    }
     if (!contains(root, value)) {
+      branches[5] = true;
       root = insert(root, value);
       nodeCount++;
       return true;
@@ -105,17 +125,22 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
   // Inserts a value inside the AVL tree.
   private Node insert(Node node, T value) {
     // Base case.
-    if (node == null) return new Node(value);
+    if (node == null){
+      branches[6] = true;
+      return new Node(value);
+    }
 
     // Compare current value to the value in the node.
     int cmp = value.compareTo(node.value);
 
     // Insert node in left subtree.
     if (cmp < 0) {
+      branches[7] = true;
       node.left = insert(node.left, value);
 
       // Insert node in right subtree.
     } else {
+      branches[8] = true;
       node.right = insert(node.right, value);
     }
 
@@ -142,25 +167,29 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
   private Node balance(Node node) {
     // Left heavy subtree.
     if (node.bf == -2) {
-
+      branches[9] = true;
       // Left-Left case.
       if (node.left.bf <= 0) {
+        branches[10] = true;
         return leftLeftCase(node);
 
         // Left-Right case.
       } else {
+        branches[11] = true;
         return leftRightCase(node);
       }
 
       // Right heavy subtree needs balancing.
-    } else if (node.bf == +2) {
-
+    } else if (node.bf == 2) {
+      branches[12] = true;
       // Right-Right case.
       if (node.right.bf >= 0) {
+        branches[13] = true;
         return rightRightCase(node);
 
         // Right-Left case.
       } else {
+        branches[14] = true;
         return rightLeftCase(node);
       }
     }
@@ -207,9 +236,13 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
   // Remove a value from this binary tree if it exists, O(log(n))
   public boolean remove(T elem) {
-    if (elem == null) return false;
+    if (elem == null){
+      branches[15] = true;
+      return false;
+    }
 
     if (contains(root, elem)) {
+      branches[16] = true;
       root = remove(root, elem);
       nodeCount--;
       return true;
@@ -220,33 +253,41 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
   // Removes a value from the AVL tree.
   private Node remove(Node node, T elem) {
-    if (node == null) return null;
+    if (node == null){
+      branches[17] = true;
+      return null;
+    }
 
     int cmp = elem.compareTo(node.value);
 
     // Dig into left subtree, the value we're looking
     // for is smaller than the current value.
     if (cmp < 0) {
+      branches[18] = true;
       node.left = remove(node.left, elem);
 
       // Dig into right subtree, the value we're looking
       // for is greater than the current value.
     } else if (cmp > 0) {
+      branches[19] = true;
       node.right = remove(node.right, elem);
 
       // Found the node we wish to remove.
     } else {
+      branches[20] = true;
 
       // This is the case with only a right subtree or no subtree at all.
       // In this situation just swap the node we wish to remove
       // with its right child.
       if (node.left == null) {
+        branches[21] = true;
         return node.right;
 
         // This is the case with only a left subtree or
         // no subtree at all. In this situation just
         // swap the node we wish to remove with its left child.
       } else if (node.right == null) {
+        branches[22] = true;
         return node.left;
 
         // When removing a node from a binary tree with two links the
@@ -255,10 +296,10 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
         // subtree. As a heuristic, I will remove from the subtree with
         // the greatest hieght in hopes that this may help with balancing.
       } else {
-
+        branches[23] = true;
         // Choose to remove from left subtree
         if (node.left.height > node.right.height) {
-
+          branches[24] = true;
           // Swap the value of the successor into the node.
           T successorValue = findMax(node.left);
           node.value = successorValue;
@@ -267,7 +308,7 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
           node.left = remove(node.left, successorValue);
 
         } else {
-
+          branches[25] = true;
           // Swap the value of the successor into the node.
           T successorValue = findMin(node.right);
           node.value = successorValue;
@@ -311,14 +352,20 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
 
       @Override
       public boolean hasNext() {
-        if (expectedNodeCount != nodeCount) throw new java.util.ConcurrentModificationException();
+        if (expectedNodeCount != nodeCount){
+          branches[26] = true;
+          throw new java.util.ConcurrentModificationException();
+        }
         return root != null && !stack.isEmpty();
       }
 
       @Override
       public T next() {
 
-        if (expectedNodeCount != nodeCount) throw new java.util.ConcurrentModificationException();
+        if (expectedNodeCount != nodeCount){
+          branches[27] = true;
+          throw new java.util.ConcurrentModificationException();
+        }
 
         while (trav != null && trav.left != null) {
           stack.push(trav.left);
@@ -328,6 +375,7 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
         Node node = stack.pop();
 
         if (node.right != null) {
+          branches[28] = true;
           stack.push(node.right);
           trav = node.right;
         }
@@ -351,11 +399,24 @@ public class AVLTreeRecursive<T extends Comparable<T>> implements Iterable<T> {
   // make sure all right child nodes are greater in value than their parent.
   // (Used only for testing)
   public boolean validateBSTInvarient(Node node) {
-    if (node == null) return true;
+    if (node == null){
+      branches[29] = true;
+      return true;
+    }
     T val = node.value;
     boolean isValid = true;
-    if (node.left != null) isValid = isValid && node.left.value.compareTo(val) < 0;
-    if (node.right != null) isValid = isValid && node.right.value.compareTo(val) > 0;
+    if (node.left != null){
+      branches[30] = true;
+      isValid = node.left.value.compareTo(val) < 0;
+    }
+    if (node.right != null){
+      branches[31] = true;
+      isValid = isValid && node.right.value.compareTo(val) > 0;
+    }
     return isValid && validateBSTInvarient(node.left) && validateBSTInvarient(node.right);
+  }
+
+  public void print_branch_coverage(){
+    System.out.println(Arrays.toString(branches));
   }
 }

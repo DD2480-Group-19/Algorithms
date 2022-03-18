@@ -5,6 +5,8 @@
  */
 package com.williamfiset.algorithms.datastructures.suffixarray;
 
+import java.util.Arrays;
+
 public abstract class SuffixArray {
 
   // Length of the suffix array
@@ -21,9 +23,12 @@ public abstract class SuffixArray {
 
   private boolean constructedSa = false;
   private boolean constructedLcpArray = false;
-
+  public static boolean[] branches = new boolean[6];
   public SuffixArray(int[] text) {
-    if (text == null) throw new IllegalArgumentException("Text cannot be null.");
+    if (text == null){
+      branches[0] = true;
+      throw new IllegalArgumentException("Text cannot be null.");
+    }
     this.T = text;
     this.N = text.length;
   }
@@ -46,21 +51,30 @@ public abstract class SuffixArray {
 
   // Builds the suffix array by calling the construct() method.
   protected void buildSuffixArray() {
-    if (constructedSa) return;
+    if (constructedSa){
+      branches[1] = true;
+      return;
+    }
     construct();
     constructedSa = true;
   }
 
   // Builds the LCP array by first creating the SA and then running the kasai algorithm.
   protected void buildLcpArray() {
-    if (constructedLcpArray) return;
+    if (constructedLcpArray){
+      branches[2] = true;
+      return;
+    }
     buildSuffixArray();
     kasai();
     constructedLcpArray = true;
   }
 
   protected static int[] toIntArray(String s) {
-    if (s == null) return null;
+    if (s == null){
+      branches[3] = true;
+      return null;
+    }
     int[] t = new int[s.length()];
     for (int i = 0; i < s.length(); i++) t[i] = s.charAt(i);
     return t;
@@ -78,10 +92,14 @@ public abstract class SuffixArray {
     for (int i = 0; i < N; i++) inv[sa[i]] = i;
     for (int i = 0, len = 0; i < N; i++) {
       if (inv[i] > 0) {
+        branches[4] = true;
         int k = sa[inv[i] - 1];
         while ((i + len < N) && (k + len < N) && T[i + len] == T[k + len]) len++;
         lcp[inv[i]] = len;
-        if (len > 0) len--;
+        if (len > 0){
+          branches[5] = true;
+          len--;
+        }
       }
     }
   }
@@ -100,5 +118,8 @@ public abstract class SuffixArray {
       sb.append(formattedStr);
     }
     return sb.toString();
+  }
+  public void print_coverage(){
+    System.out.println(Arrays.toString(branches));
   }
 }

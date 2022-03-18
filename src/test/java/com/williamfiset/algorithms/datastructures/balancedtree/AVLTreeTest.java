@@ -10,8 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AVLTreeTest {
-
-  static final int MAX_RAND_NUM = +100000;
+  static final int MAX_RAND_NUM = 100000;
   static final int MIN_RAND_NUM = -100000;
 
   static final int TEST_SZ = 2500;
@@ -40,19 +39,35 @@ public class AVLTreeTest {
 
   @Test
   public void testLeftLeftCase() {
-
     tree.insert(3);
     tree.insert(2);
     tree.insert(1);
 
-    assertThat(tree.root.value.intValue()).isEqualTo(2);
-    assertThat(tree.root.left.value.intValue()).isEqualTo(1);
-    assertThat(tree.root.right.value.intValue()).isEqualTo(3);
+    assertThat(tree.root.value).isEqualTo(2);
+    assertThat(tree.root.left.value).isEqualTo(1);
+    assertThat(tree.root.right.value).isEqualTo(3);
 
     assertThat(tree.root.left.left).isNull();
     assertThat(tree.root.left.right).isNull();
     assertThat(tree.root.right.left).isNull();
     assertThat(tree.root.right.right).isNull();
+  }
+  @Test
+  public void heightTest() {
+    tree.root = null;
+    assertThat(tree.height()).isEqualTo(0);
+  }
+  @Test
+  public void removeTest() {
+    //check contains(node, element) == false branch
+    tree.root = null;
+    List<Integer> lst = genRandList(5);
+    for (Integer value : lst) {
+      assertThat(tree.remove(value)).isEqualTo(false);
+
+    }
+
+
   }
 
   @Test
@@ -62,9 +77,9 @@ public class AVLTreeTest {
     tree.insert(1);
     tree.insert(2);
 
-    assertThat(tree.root.value.intValue()).isEqualTo(2);
-    assertThat(tree.root.left.value.intValue()).isEqualTo(1);
-    assertThat(tree.root.right.value.intValue()).isEqualTo(3);
+    assertThat(tree.root.value).isEqualTo(2);
+    assertThat(tree.root.left.value).isEqualTo(1);
+    assertThat(tree.root.right.value).isEqualTo(3);
 
     assertThat(tree.root.left.left).isNull();
     assertThat(tree.root.left.right).isNull();
@@ -79,9 +94,9 @@ public class AVLTreeTest {
     tree.insert(2);
     tree.insert(3);
 
-    assertThat(tree.root.value.intValue()).isEqualTo(2);
-    assertThat(tree.root.left.value.intValue()).isEqualTo(1);
-    assertThat(tree.root.right.value.intValue()).isEqualTo(3);
+    assertThat(tree.root.value).isEqualTo(2);
+    assertThat(tree.root.left.value).isEqualTo(1);
+    assertThat(tree.root.right.value).isEqualTo(3);
 
     assertThat(tree.root.left.left).isNull();
     assertThat(tree.root.left.right).isNull();
@@ -96,9 +111,9 @@ public class AVLTreeTest {
     tree.insert(3);
     tree.insert(2);
 
-    assertThat(tree.root.value.intValue()).isEqualTo(2);
-    assertThat(tree.root.left.value.intValue()).isEqualTo(1);
-    assertThat(tree.root.right.value.intValue()).isEqualTo(3);
+    assertThat(tree.root.value).isEqualTo(2);
+    assertThat(tree.root.left.value).isEqualTo(1);
+    assertThat(tree.root.right.value).isEqualTo(3);
 
     assertThat(tree.root.left.left).isNull();
     assertThat(tree.root.left.right).isNull();
@@ -117,7 +132,7 @@ public class AVLTreeTest {
   // Make sure all balance factor values are either -1, 0 or +1
   static boolean validateBalanceFactorValues(AVLTreeRecursive<Integer>.Node node) {
     if (node == null) return true;
-    if (node.bf > +1 || node.bf < -1) return false;
+    if (node.bf > 1 || node.bf < -1) return false;
     return validateBalanceFactorValues(node.left) && validateBalanceFactorValues(node.right);
   }
 
@@ -157,8 +172,7 @@ public class AVLTreeTest {
     TreeSet<Integer> ts = new TreeSet<>();
     for (int i = 0; i < TEST_SZ; i++) {
 
-      int size = i;
-      List<Integer> lst = genRandList(size);
+      List<Integer> lst = genRandList(i);
       for (Integer value : lst) {
         tree.insert(value);
         ts.add(value);
@@ -166,17 +180,18 @@ public class AVLTreeTest {
       Collections.shuffle(lst);
 
       // Remove all the elements we just placed in the tree.
-      for (int j = 0; j < size; j++) {
+      for (int j = 0; j < i; j++) {
 
         Integer value = lst.get(j);
 
         assertThat(tree.remove(value)).isEqualTo(ts.remove(value));
         assertThat(tree.contains(value)).isFalse();
-        assertThat(tree.size()).isEqualTo(size - j - 1);
+        assertThat(tree.size()).isEqualTo(i - j - 1);
       }
 
       assertThat(tree.isEmpty()).isTrue();
     }
+    tree.print_branch_coverage();
   }
 
   static List<Integer> genRandList(int sz) {

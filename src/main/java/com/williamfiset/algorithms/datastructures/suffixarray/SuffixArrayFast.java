@@ -7,8 +7,11 @@
  */
 package com.williamfiset.algorithms.datastructures.suffixarray;
 
-public class SuffixArrayFast extends SuffixArray {
+import java.util.Arrays;
 
+public class SuffixArrayFast extends SuffixArray {
+  // for branch coverage
+  public static boolean[] branches = new boolean[3];
   private static final int DEFAULT_ALPHABET_SIZE = 256;
 
   int alphabetSize;
@@ -41,7 +44,10 @@ public class SuffixArrayFast extends SuffixArray {
     for (i = N - 1; i >= 0; --i) sa[--c[T[i]]] = i;
     for (p = 1; p < N; p <<= 1) {
       for (r = 0, i = N - p; i < N; ++i) sa2[r++] = i;
-      for (i = 0; i < N; ++i) if (sa[i] >= p) sa2[r++] = sa[i] - p;
+      for (i = 0; i < N; ++i) if (sa[i] >= p){
+        branches[0]=true;
+        sa2[r++] = sa[i] - p;
+      }
       java.util.Arrays.fill(c, 0, alphabetSize, 0);
       for (i = 0; i < N; ++i) c[rank[i]]++;
       for (i = 1; i < alphabetSize; ++i) c[i] += c[i - 1];
@@ -50,17 +56,25 @@ public class SuffixArrayFast extends SuffixArray {
         if (!(rank[sa[i - 1]] == rank[sa[i]]
             && sa[i - 1] + p < N
             && sa[i] + p < N
-            && rank[sa[i - 1] + p] == rank[sa[i] + p])) r++;
+            && rank[sa[i - 1] + p] == rank[sa[i] + p])){
+          branches[1] = true;
+          r++;
+        }
         sa2[sa[i]] = r;
       }
       tmp = rank;
       rank = sa2;
       sa2 = tmp;
-      if (r == N - 1) break;
+      if (r == N - 1){
+        branches[2] = true;
+        break;
+      }
       alphabetSize = r + 1;
     }
   }
-
+  public void print_coverage(){
+    System.out.println(Arrays.toString(branches));
+  }
   public static void main(String[] args) {
     SuffixArrayFast sa = new SuffixArrayFast("ABBABAABAA");
     System.out.println(sa);

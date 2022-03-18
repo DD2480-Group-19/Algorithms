@@ -17,6 +17,7 @@ package com.williamfiset.algorithms.graphtheory.treealgorithms;
 import java.util.*;
 
 public class TreeIsomorphismWithBfs {
+  public boolean[] branches = new boolean[9];
 
   public static List<List<Integer>> createEmptyTree(int n) {
     List<List<Integer>> tree = new ArrayList<>(n);
@@ -29,7 +30,7 @@ public class TreeIsomorphismWithBfs {
     tree.get(to).add(from);
   }
 
-  private static List<Integer> findTreeCenters(List<List<Integer>> tree) {
+  public List<Integer> findTreeCenters(List<List<Integer>> tree) {
     final int n = tree.size();
     int[] degrees = new int[n];
 
@@ -38,7 +39,9 @@ public class TreeIsomorphismWithBfs {
     for (int i = 0; i < n; i++) {
       List<Integer> edges = tree.get(i);
       degrees[i] = edges.size();
-      if (degrees[i] <= 1) leaves.add(i);
+      if (degrees[i] <= 1)
+        branches[0] = true;
+        leaves.add(i);
     }
 
     int processedLeafs = leaves.size();
@@ -49,7 +52,10 @@ public class TreeIsomorphismWithBfs {
     while (processedLeafs < n) {
       List<Integer> newLeaves = new ArrayList<>();
       for (int node : leaves)
-        for (int neighbor : tree.get(node)) if (--degrees[neighbor] == 1) newLeaves.add(neighbor);
+        for (int neighbor : tree.get(node))
+          if (--degrees[neighbor] == 1){
+            branches[1] = true;
+            newLeaves.add(neighbor);}
       processedLeafs += newLeaves.size();
       leaves = newLeaves;
     }
@@ -60,9 +66,13 @@ public class TreeIsomorphismWithBfs {
   // Encodes a tree as a string such that any isomorphic tree
   // also has the same encoding.
   // TODO(william): make this method private and test only with the treesAreIsomorphic method
-  public static String encodeTree(List<List<Integer>> tree) {
-    if (tree == null || tree.size() == 0) return "";
-    if (tree.size() == 1) return "()";
+  public String encodeTree(List<List<Integer>> tree) {
+    if (tree == null || tree.size() == 0){
+      branches[2] = true;
+      return "";}
+    if (tree.size() == 1){
+      branches[3] = true;
+      return "()";}
     final int n = tree.size();
 
     int root = findTreeCenters(tree).get(0);
@@ -84,12 +94,16 @@ public class TreeIsomorphismWithBfs {
       degree[at] = edges.size();
       for (int next : edges) {
         if (!visited[next]) {
+          branches[4] = true;
           visited[next] = true;
           parent[next] = at;
           q.offer(next);
         }
       }
-      if (degree[at] == 1) leafs.add(at);
+      if (degree[at] == 1) {
+        branches[5] = true;
+        leafs.add(at);
+      }
     }
 
     List<Integer> newLeafs = new ArrayList<>();
@@ -107,7 +121,10 @@ public class TreeIsomorphismWithBfs {
         // is a candidate for the next cycle of leaf nodes
         visited[leaf] = true;
         int p = parent[leaf];
-        if (--degree[p] == 1) newLeafs.add(p);
+        if (--degree[p] == 1){
+          branches[6] = true;
+          newLeafs.add(p);
+        }
 
         treeSize--;
       }
@@ -119,7 +136,10 @@ public class TreeIsomorphismWithBfs {
         for (int child : tree.get(p))
           // Recall edges are bidirectional so we don't want to
           // access the parent's parent here.
-          if (visited[child]) labels.add(map[child]);
+          if (visited[child]){
+            branches[7] = true;
+            labels.add(map[child]);
+          }
 
         String parentInnerParentheses = map[p].substring(1, map[p].length() - 1);
         labels.add(parentInnerParentheses);
@@ -135,45 +155,22 @@ public class TreeIsomorphismWithBfs {
 
     // Only one node remains and it holds the canonical form
     String l1 = map[leafs.get(0)];
-    if (treeSize == 1) return l1;
+    if (treeSize == 1) {
+      branches[8] = true;
+      return l1;
+    }
 
     // Two nodes remain and we need to combine their labels
     String l2 = map[leafs.get(1)];
     return ((l1.compareTo(l2) < 0) ? (l1 + l2) : (l2 + l1));
   }
 
-  public static boolean treesAreIsomorphic(List<List<Integer>> tree1, List<List<Integer>> tree2) {
+  public boolean treesAreIsomorphic(List<List<Integer>> tree1, List<List<Integer>> tree2) {
     return encodeTree(tree1).equals(encodeTree(tree2));
   }
 
-  /* Example usage */
-
-  public static void main(String[] args) {
-    // Test if two tree are isomorphic, meaning they are structurally equivalent
-    // but are labeled differently.
-    List<List<Integer>> tree1 = createEmptyTree(5);
-    List<List<Integer>> tree2 = createEmptyTree(5);
-
-    addUndirectedEdge(tree1, 2, 0);
-    addUndirectedEdge(tree1, 3, 4);
-    addUndirectedEdge(tree1, 2, 1);
-    addUndirectedEdge(tree1, 2, 3);
-
-    addUndirectedEdge(tree2, 1, 0);
-    addUndirectedEdge(tree2, 2, 4);
-    addUndirectedEdge(tree2, 1, 3);
-    addUndirectedEdge(tree2, 1, 2);
-
-    String encoding1 = encodeTree(tree1);
-    String encoding2 = encodeTree(tree2);
-
-    System.out.println("Tree1 encoding: " + encoding1);
-    System.out.println("Tree2 encoding: " + encoding1);
-    System.out.println("Trees are isomorphic: " + (encoding1.equals(encoding2)));
-
-    // Print:
-    // Tree1 encoding: (()())(())
-    // Tree2 encoding: (()())(())
-    // Trees are isomorphic: true
+  public void print_coverage(){
+    System.out.println(Arrays.toString(branches));
   }
+
 }
